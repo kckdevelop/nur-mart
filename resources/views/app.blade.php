@@ -1364,6 +1364,7 @@
                 <table class="app-table">
                     <thead>
                         <tr>
+                            <th>Foto</th>
                             <th>SKU</th>
                             <th>Barcode</th>
                             <th>Nama Produk</th>
@@ -1714,6 +1715,23 @@
                             <label>Satuan *</label>
                             <input type="text" id="input-barang-satuan" class="form-control" required value="pcs" placeholder="pcs, kg, dus, botol">
                         </div>
+                    </div>
+
+                    <!-- Upload Gambar Produk -->
+                    <div class="form-group" style="margin-top: 4px;">
+                        <label>Foto Produk</label>
+                        <div id="gambar-upload-area" style="border: 2px dashed var(--light-border); border-radius: var(--radius-md); padding: 16px; text-align: center; cursor: pointer; transition: border-color 0.2s;" onclick="document.getElementById('input-barang-gambar').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'" ondragleave="this.style.borderColor='var(--light-border)'" ondrop="handleGambarDrop(event)">
+                            <div id="gambar-preview-wrap" style="display:none; position:relative; display:inline-block;">
+                                <img id="gambar-preview-img" src="" alt="Preview" style="max-height:120px; max-width:100%; border-radius:8px; object-fit:cover;">
+                                <button type="button" onclick="clearGambarInput(event)" style="position:absolute;top:-8px;right:-8px;background:var(--danger);color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div id="gambar-upload-placeholder">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px; color:var(--text-muted); margin-bottom:8px;"></i>
+                                <p style="color:var(--text-muted); font-size:13px; margin:0;">Klik atau drag &amp; drop gambar di sini</p>
+                                <p style="color:var(--text-muted); font-size:11px; margin:4px 0 0;">JPG, PNG, WebP — maks. 2MB</p>
+                            </div>
+                        </div>
+                        <input type="file" id="input-barang-gambar" accept="image/jpeg,image/png,image/jpg,image/webp" style="display:none;" onchange="handleGambarChange(event)">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -2360,7 +2378,7 @@
                     );
 
                     if (filtered.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted);">Tidak ada data produk.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted);">Tidak ada data produk.</td></tr>`;
                         return;
                     }
 
@@ -2370,8 +2388,13 @@
                             `<span class="pos-item-stock stock-empty">Habis</span>` :
                             (isLow ? `<span class="pos-item-stock stock-low">Menipis</span>` : `<span class="pos-item-stock stock-safe">Aman</span>`);
 
+                        const imgHtml = b.gambar_full_url
+                            ? `<img src="${b.gambar_full_url}" alt="${b.nama_barang}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--light-border);cursor:pointer;" onclick="showGambarModal('${b.gambar_full_url}','${b.nama_barang}')">`
+                            : `<div style="width:48px;height:48px;border-radius:8px;background:var(--light-bg);border:1px dashed var(--light-border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:18px;"><i class="fa-solid fa-image"></i></div>`;
+
                         return `
                             <tr>
+                                <td style="text-align:center;">${imgHtml}</td>
                                 <td><code>${b.kode_sku}</code></td>
                                 <td><small>${b.barcode || '-'}</small></td>
                                 <td style="font-weight: 700;">${b.nama_barang}</td>
@@ -2411,7 +2434,65 @@
             document.getElementById('input-barang-jual').value = '';
             document.getElementById('input-barang-stok').value = '10';
             document.getElementById('input-barang-satuan').value = 'pcs';
+            clearGambarPreviewOnly();
             openModal('modal-barang');
+        }
+
+        // --- Gambar Upload Helpers ---
+        function handleGambarChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            setGambarPreview(URL.createObjectURL(file));
+        }
+
+        function handleGambarDrop(event) {
+            event.preventDefault();
+            document.getElementById('gambar-upload-area').style.borderColor = 'var(--light-border)';
+            const file = event.dataTransfer.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            // Assign to file input
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            document.getElementById('input-barang-gambar').files = dt.files;
+            setGambarPreview(URL.createObjectURL(file));
+        }
+
+        function setGambarPreview(src) {
+            const img = document.getElementById('gambar-preview-img');
+            const wrap = document.getElementById('gambar-preview-wrap');
+            const placeholder = document.getElementById('gambar-upload-placeholder');
+            img.src = src;
+            wrap.style.display = 'inline-block';
+            placeholder.style.display = 'none';
+        }
+
+        function clearGambarPreviewOnly() {
+            const wrap = document.getElementById('gambar-preview-wrap');
+            const placeholder = document.getElementById('gambar-upload-placeholder');
+            const img = document.getElementById('gambar-preview-img');
+            const fileInput = document.getElementById('input-barang-gambar');
+            if (wrap) wrap.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'block';
+            if (img) img.src = '';
+            if (fileInput) fileInput.value = '';
+        }
+
+        function clearGambarInput(event) {
+            event.stopPropagation();
+            clearGambarPreviewOnly();
+        }
+
+        // Modal lightbox untuk lihat gambar produk penuh
+        function showGambarModal(url, nama) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+            overlay.onclick = () => overlay.remove();
+            overlay.innerHTML = `
+                <img src="${url}" alt="${nama}" style="max-width:90vw;max-height:80vh;border-radius:12px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+                <p style="color:white;font-size:15px;font-weight:600;">${nama}</p>
+                <button onclick="this.parentElement.remove()" style="background:white;border:none;border-radius:8px;padding:8px 20px;cursor:pointer;font-weight:600;">Tutup</button>
+            `;
+            document.body.appendChild(overlay);
         }
 
         function openEditBarangModal(id) {
@@ -2428,41 +2509,56 @@
             document.getElementById('input-barang-jual').value = item.harga_jual;
             document.getElementById('input-barang-stok').value = item.stok;
             document.getElementById('input-barang-satuan').value = item.satuan;
+
+            // Tampilkan preview gambar yang sudah ada
+            if (item.gambar_full_url) {
+                setGambarPreview(item.gambar_full_url);
+            } else {
+                clearGambarPreviewOnly();
+            }
+
             openModal('modal-barang');
         }
 
         async function handleSaveBarang(e) {
             e.preventDefault();
             const id = document.getElementById('barang-id').value;
-            const payload = {
-                kode_sku: document.getElementById('input-barang-sku').value,
-                barcode: document.getElementById('input-barang-barcode').value || null,
-                nama_barang: document.getElementById('input-barang-nama').value,
-                kategori_id: Number(document.getElementById('input-barang-kategori').value),
-                harga_beli: Number(document.getElementById('input-barang-beli').value),
-                harga_jual: Number(document.getElementById('input-barang-jual').value),
-                stok: Number(document.getElementById('input-barang-stok').value) || 0,
-                satuan: document.getElementById('input-barang-satuan').value
-            };
 
+            // Gunakan FormData agar bisa upload file gambar (multipart/form-data)
+            const formData = new FormData();
+            formData.append('kode_sku', document.getElementById('input-barang-sku').value);
+            const barcode = document.getElementById('input-barang-barcode').value;
+            if (barcode) formData.append('barcode', barcode);
+            formData.append('nama_barang', document.getElementById('input-barang-nama').value);
+            formData.append('kategori_id', document.getElementById('input-barang-kategori').value);
+            formData.append('harga_beli', document.getElementById('input-barang-beli').value);
+            formData.append('harga_jual', document.getElementById('input-barang-jual').value);
+            formData.append('stok', document.getElementById('input-barang-stok').value || 0);
+            formData.append('satuan', document.getElementById('input-barang-satuan').value);
+
+            // Lampirkan file gambar jika ada
+            const gambarFile = document.getElementById('input-barang-gambar').files[0];
+            if (gambarFile) formData.append('gambar', gambarFile);
+
+            // Selalu pakai POST (server mendukung POST /barang/{id} untuk update multipart)
             const url = id ? `${API_BASE}/barang/${id}` : `${API_BASE}/barang`;
-            const method = id ? 'PUT' : 'POST';
+
+            // Header: jangan set Content-Type — biarkan browser isi boundary otomatis
+            const headers = { 'Authorization': `Bearer ${authToken}`, 'Accept': 'application/json' };
 
             try {
-                const res = await fetch(url, {
-                    method: method,
-                    headers: apiHeaders(),
-                    body: JSON.stringify(payload)
-                });
+                const res = await fetch(url, { method: 'POST', headers, body: formData });
                 const json = await res.json();
                 if (json.status) {
                     showToast(json.message, 'success');
                     closeModal('modal-barang');
+                    clearGambarPreviewOnly();
                     loadMasterBarang();
                     loadPosProducts();
                     loadDashboard();
                 } else {
-                    showToast('Gagal menyimpan: ' + (json.message || 'Periksa input'), 'error');
+                    const errMsg = json.errors ? Object.values(json.errors).flat().join(', ') : (json.message || 'Periksa input');
+                    showToast('Gagal menyimpan: ' + errMsg, 'error');
                 }
             } catch (err) {
                 console.error(err);
