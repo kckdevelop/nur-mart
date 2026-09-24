@@ -6,38 +6,39 @@
     <style>
         @page {
             margin: 0;
-            size: 80mm auto; /* lebar struk thermal 80mm, tinggi menyesuaikan isi */
-        }
-        * {
-            box-sizing: border-box;
         }
         body {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 10px;
-            color: #000;
             margin: 0;
-            padding: 8px 10px;
-            width: 80mm;
-            max-width: 80mm;
-            overflow: hidden;
-            word-wrap: break-word;
-            word-break: break-word;
+            padding: 16px 22px 20px 22px; /* Margin nyata di setiap tepi: atas 16px, kanan 22px, bawah 20px, kiri 22px */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 8px;
+            line-height: 1.35;
+            color: #000;
+            background: #fff;
         }
         .text-center { text-align: center; }
         .text-right  { text-align: right; }
         .text-left   { text-align: left; }
         .bold        { font-weight: bold; }
 
+        /* Store Header */
+        .store-header {
+            text-align: center;
+            margin-bottom: 5px;
+        }
         .store-title {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: bold;
+            letter-spacing: 0.5px;
             margin-bottom: 2px;
         }
         .store-address {
-            font-size: 9px;
-            margin-bottom: 4px;
-            line-height: 1.5;
+            font-size: 7.5px;
+            line-height: 1.3;
+            color: #222;
         }
+
+        /* Dividers */
         .divider {
             border: none;
             border-top: 1px dashed #000;
@@ -45,86 +46,128 @@
         }
         .double-divider {
             border: none;
-            border-top: 2px solid #000;
+            border-top: 1.5px solid #000;
             margin: 5px 0;
         }
+
+        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
         }
         td {
-            padding: 1px 0;
+            padding: 1.5px 0;
             vertical-align: top;
-            overflow: hidden;
-            word-wrap: break-word;
+            font-size: 8px;
         }
-        /* Kolom kiri label (40%) dan kolom kanan nilai (60%) */
-        td:first-child  { width: 42%; }
-        td:last-child   { width: 58%; }
 
-        .item-name {
-            font-weight: bold;
-            white-space: normal;
+        /* Metadata Transaksi Nota */
+        .tbl-meta td.label {
+            width: 35%;
+            text-align: left;
+            color: #333;
         }
+        .tbl-meta td.value {
+            width: 65%;
+            text-align: right;
+            word-break: break-all;
+        }
+
+        /* Item Barang */
+        .item-name {
+            font-size: 8px;
+            font-weight: bold;
+            padding-top: 2px;
+        }
+        .tbl-item td.qty {
+            width: 48%;
+            text-align: left;
+            color: #444;
+            font-size: 7.5px;
+        }
+        .tbl-item td.subtotal {
+            width: 52%;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* Total & Pembayaran */
+        .tbl-total td.label {
+            width: 46%;
+            text-align: left;
+        }
+        .tbl-total td.value {
+            width: 54%;
+            text-align: right;
+        }
+        .total-row td {
+            font-size: 9px;
+            font-weight: bold;
+            padding: 2px 0;
+        }
+
+        /* Footer */
         .footer-note {
-            font-size: 8.5px;
-            margin-top: 8px;
+            font-size: 7px;
             text-align: center;
-            line-height: 1.6;
+            line-height: 1.35;
+            margin-top: 5px;
+            color: #222;
         }
     </style>
 </head>
 <body>
-    <div class="text-center">
-        <div class="store-title">TOKO KELONTONG NURMART</div>
+    <!-- 1. Header Toko -->
+    <div class="store-header">
+        <div class="store-title">{{ $pengaturan->nama_toko ?? 'TOKO KELONTONG NURMART' }}</div>
         <div class="store-address">
-            Jogodayoh RT 02, Sedia Sembako &amp; Kebutuhan Rumah Tangga<br>
-            Telp / WA: 0812-3456-7890
+            @if(!empty($pengaturan->slogan))
+                {{ $pengaturan->slogan }}<br>
+            @endif
+            @if(!empty($pengaturan->alamat))
+                {{ $pengaturan->alamat }}<br>
+            @endif
+            @if(!empty($pengaturan->no_telepon))
+                Telp / WA: {{ $pengaturan->no_telepon }}
+            @endif
         </div>
     </div>
 
     <hr class="divider">
 
-    <table>
-        <colgroup>
-            <col style="width: 42%;">
-            <col style="width: 58%;">
-        </colgroup>
+    <!-- 2. Metadata Transaksi Nota -->
+    <table class="tbl-meta">
         <tr>
-            <td class="text-left">No. Nota</td>
-            <td class="text-right bold">{{ $penjualan->no_nota }}</td>
+            <td class="label">No. Nota</td>
+            <td class="value bold">{{ $penjualan->no_nota }}</td>
         </tr>
         <tr>
-            <td class="text-left">Tanggal</td>
-            <td class="text-right">{{ \Carbon\Carbon::parse($penjualan->tanggal)->format('d/m/Y H:i') }}</td>
+            <td class="label">Tanggal</td>
+            <td class="value">{{ \Carbon\Carbon::parse($penjualan->tanggal)->format('d/m/Y H:i') }}</td>
         </tr>
         <tr>
-            <td class="text-left">Kasir</td>
-            <td class="text-right">{{ $penjualan->kasir->name ?? 'Kasir' }}</td>
+            <td class="label">Kasir</td>
+            <td class="value">{{ $penjualan->kasir->name ?? 'Kasir' }}</td>
         </tr>
         <tr>
-            <td class="text-left">Metode Bayar</td>
-            <td class="text-right bold" style="text-transform: uppercase;">{{ $penjualan->metode_pembayaran }}</td>
+            <td class="label">Metode</td>
+            <td class="value bold" style="text-transform: uppercase;">{{ $penjualan->metode_pembayaran }}</td>
         </tr>
     </table>
 
     <hr class="divider">
 
-    <table>
-        <colgroup>
-            <col style="width: 58%;">
-            <col style="width: 42%;">
-        </colgroup>
+    <!-- 3. Rincian Item Barang -->
+    <table class="tbl-item">
         @foreach($penjualan->details as $item)
             <tr>
                 <td colspan="2" class="item-name">{{ $item->barang->nama_barang ?? 'Barang' }}</td>
             </tr>
             <tr>
-                <td class="text-left" style="color: #444;">
+                <td class="qty">
                     {{ $item->jumlah }} x Rp {{ number_format($item->harga_jual_satuan, 0, ',', '.') }}
                 </td>
-                <td class="text-right bold">
+                <td class="subtotal">
                     Rp {{ number_format($item->subtotal, 0, ',', '.') }}
                 </td>
             </tr>
@@ -133,31 +176,35 @@
 
     <hr class="divider">
 
-    <table>
-        <colgroup>
-            <col style="width: 50%;">
-            <col style="width: 50%;">
-        </colgroup>
-        <tr>
-            <td class="text-left bold" style="font-size: 11px;">TOTAL BELANJA</td>
-            <td class="text-right bold" style="font-size: 11px;">Rp {{ number_format($penjualan->total_belanja, 0, ',', '.') }}</td>
+    <!-- 4. Rincian Pembayaran & Kembalian -->
+    <table class="tbl-total">
+        <tr class="total-row">
+            <td class="label">TOTAL BELANJA</td>
+            <td class="value">Rp {{ number_format($penjualan->total_belanja, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td class="text-left">Bayar ({{ strtoupper($penjualan->metode_pembayaran) }})</td>
-            <td class="text-right">Rp {{ number_format($penjualan->jumlah_bayar, 0, ',', '.') }}</td>
+            <td class="label">Bayar ({{ strtoupper($penjualan->metode_pembayaran) }})</td>
+            <td class="value bold">Rp {{ number_format($penjualan->jumlah_bayar, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td class="text-left bold">Kembalian</td>
-            <td class="text-right bold">Rp {{ number_format($penjualan->kembalian, 0, ',', '.') }}</td>
+            <td class="label bold">Kembalian</td>
+            <td class="value bold">Rp {{ number_format($penjualan->kembalian, 0, ',', '.') }}</td>
         </tr>
     </table>
 
     <hr class="double-divider">
 
+    <!-- 5. Footer & Catatan Pelanggan -->
     <div class="footer-note">
         *** TERIMA KASIH ATAS KUNJUNGAN ANDA ***<br>
-        Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.<br>
-        Layanan Keluhan Pelanggan: 0812-3456-7890
+        @if(!empty($pengaturan->footer_struk))
+            {!! nl2br(e($pengaturan->footer_struk)) !!}<br>
+        @else
+            Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.<br>
+        @endif
+        @if(!empty($pengaturan->no_telepon))
+            Layanan Pelanggan: {{ $pengaturan->no_telepon }}
+        @endif
     </div>
 </body>
 </html>

@@ -146,14 +146,16 @@ class PenjualanController extends Controller
             return $this->errorResponse('Transaksi penjualan tidak ditemukan.', 404);
         }
 
-        // Estimasi tinggi kertas roll thermal dinamis berdasarkan jumlah item
+        // Estimasi tinggi kertas roll thermal dinamis dan presisi (dengan margin tepi aman)
         $itemCount = $penjualan->details->count();
-        $paperHeight = 320 + ($itemCount * 30); // pt
+        $paperHeight = 250 + ($itemCount * 22); // pt
 
         // 80mm width ≈ 226.77 pt
         $customPaper = [0, 0, 226.77, $paperHeight];
 
-        $pdf = Pdf::loadView('pdf.struk_penjualan', compact('penjualan'))
+        $pengaturan = \App\Models\Pengaturan::getUtama();
+
+        $pdf = Pdf::loadView('pdf.struk_penjualan', compact('penjualan', 'pengaturan'))
             ->setPaper($customPaper, 'portrait');
 
         $fileName = 'struk_' . $penjualan->no_nota . '.pdf';

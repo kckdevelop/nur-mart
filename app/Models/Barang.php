@@ -53,8 +53,8 @@ class Barang extends Model
             return $this->gambar_url;
         }
 
-        // Path relatif di storage public → konversi ke full URL
-        return url(Storage::url($this->gambar_url));
+        // Path relatif di storage public → konversi ke full URL dinamis sesuai host & port request
+        return asset(Storage::url($this->gambar_url));
     }
 
     /**

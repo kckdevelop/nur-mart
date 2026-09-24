@@ -427,13 +427,14 @@
             background: #ffffff;
             border: 1px solid var(--light-border);
             border-radius: var(--radius-md);
-            padding: 14px;
+            padding: 0;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
+            overflow: hidden;
         }
 
         .pos-item-card:hover {
@@ -442,27 +443,81 @@
             box-shadow: var(--shadow-md);
         }
 
+        .pos-item-image-box {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            background: #f8fafc;
+            margin-bottom: 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pos-item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .pos-item-card:hover .pos-item-img {
+            transform: scale(1.06);
+        }
+
+        .pos-item-img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            color: #94a3b8;
+            font-size: 32px;
+        }
+
+        .pos-item-stock-floating {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+
         .pos-item-sku {
-            font-size: 11px;
+            font-size: 10px;
             font-family: monospace;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .pos-item-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--text-main);
             line-height: 1.3;
-            margin-bottom: 8px;
-            min-height: 36px;
+            margin-bottom: 6px;
+            min-height: 34px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .pos-item-price {
             font-size: 15px;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 6px;
+            margin-bottom: 2px;
         }
 
         .pos-item-stock {
@@ -1041,6 +1096,133 @@
             color: #991b1b;
             transform: translateY(-1px);
         }
+
+        /* ========================================================
+           PENGATURAN (SETTINGS) & RECEIPT PREVIEW STYLES
+           ======================================================== */
+        .settings-header {
+            margin-bottom: 24px;
+        }
+
+        .settings-subnav {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .settings-subnav-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-subnav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.6);
+        }
+
+        .settings-subnav-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-panel {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .settings-grid-split {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 992px) {
+            .settings-grid-split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-avatar-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #059669, #0284c7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+            margin-bottom: 12px;
+        }
+
+        /* Thermal Receipt Paper Simulator */
+        .thermal-paper {
+            background: #ffffff;
+            color: #111;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 18px 14px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            font-size: 11px;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        .thermal-paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: repeating-linear-gradient(45deg, #cbd5e1, #cbd5e1 5px, transparent 5px, transparent 10px);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .thermal-divider {
+            border: none;
+            border-top: 1px dashed #64748b;
+            margin: 8px 0;
+        }
+
+        .thermal-double-divider {
+            border: none;
+            border-top: 2px solid #334155;
+            margin: 8px 0;
+        }
+
+        .badge-role-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 <body>
@@ -1120,21 +1302,24 @@
             </a>
 
             <!-- Navigation Tabs -->
-            <nav class="nav-center">
-                <button class="nav-btn active" onclick="switchTab('dasbor')">
+            <nav class="nav-center" id="main-nav">
+                <button id="nav-btn-dasbor" class="nav-btn active" onclick="switchTab('dasbor')">
                     <i class="fa-solid fa-chart-pie"></i> Dasbor
                 </button>
-                <button class="nav-btn" onclick="switchTab('pos')">
+                <button id="nav-btn-pos" class="nav-btn" onclick="switchTab('pos')">
                     <i class="fa-solid fa-cash-register"></i> Kasir POS
                 </button>
-                <button class="nav-btn" onclick="switchTab('barang')">
+                <button id="nav-btn-barang" class="nav-btn" onclick="switchTab('barang')">
                     <i class="fa-solid fa-boxes-stacked"></i> Produk
                 </button>
-                <button class="nav-btn" onclick="switchTab('belanja')">
+                <button id="nav-btn-belanja" class="nav-btn" onclick="switchTab('belanja')">
                     <i class="fa-solid fa-truck-ramp-box"></i> Belanja Stok
                 </button>
-                <button class="nav-btn" onclick="switchTab('laporan')">
+                <button id="nav-btn-laporan" class="nav-btn" onclick="switchTab('laporan')">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Laba Rugi
+                </button>
+                <button id="nav-btn-pengaturan" class="nav-btn" onclick="switchTab('pengaturan')">
+                    <i class="fa-solid fa-gear"></i> Pengaturan
                 </button>
             </nav>
 
@@ -1144,7 +1329,7 @@
                     <div id="user-display-name" style="font-weight: 700; font-size: 13px;">Haji Mansyur</div>
                     <span id="user-display-role" class="role-badge role-pemilik">👑 Pemilik Toko</span>
                 </div>
-                <button class="btn-switch-role" onclick="toggleRole()" title="Klik untuk beralih mode Kasir / Pemilik">
+                <button id="btn-switch-role" class="btn-switch-role" onclick="toggleRole()" title="Klik untuk beralih mode Kasir / Pemilik" style="display:none;">
                     <i class="fa-solid fa-arrows-rotate"></i> Ganti Role
                 </button>
                 <button class="btn-logout" onclick="logoutUser()" title="Logout dari sistem">
@@ -1552,6 +1737,293 @@
             </div>
         </section>
 
+        <!-- ========================================== -->
+        <!-- TAB 6: PENGATURAN USER, TOKO, ALAMAT & TELP-->
+        <!-- ========================================== -->
+        <section id="tab-pengaturan" class="tab-panel">
+            <div class="settings-header">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
+                    <div>
+                        <h2 style="font-size: 22px; font-weight: 800; color: var(--text-main);">
+                            <i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Pengaturan Sistem & Akun
+                        </h2>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+                            Kelola profil pribadi, nomor telepon, alamat, informasi toko untuk cetak struk, serta manajemen akun kasir.
+                        </p>
+                    </div>
+                    <div id="settings-role-indicator">
+                        <!-- Role indicator will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Sub-Navigation Pills -->
+                <div class="settings-subnav">
+                    <button class="settings-subnav-btn active" onclick="switchSettingsSubTab('profile')">
+                        <i class="fa-solid fa-id-card"></i> Profil & Kontak Saya
+                    </button>
+                    <button class="settings-subnav-btn" onclick="switchSettingsSubTab('store')">
+                        <i class="fa-solid fa-shop"></i> Pengaturan Toko & Kontak Struk
+                    </button>
+                    <button class="settings-subnav-btn" id="btn-subnav-users" onclick="switchSettingsSubTab('users')">
+                        <i class="fa-solid fa-users-gear"></i> Kelola Kasir & Pengguna
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 1: PROFIL & KONTAK PENGGUNA -->
+            <div id="subtab-profile" class="settings-panel active">
+                <div class="table-card" style="max-width: 850px; margin: 0 auto 24px auto;">
+                    <div style="display: flex; align-items: center; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--light-border); margin-bottom: 24px;">
+                        <div class="profile-avatar-circle" id="profile-avatar-char">U</div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <h3 id="profile-card-name" style="font-size: 18px; font-weight: 800;">Memuat Nama...</h3>
+                                <span id="profile-card-role" class="badge-role-pill role-pemilik">Pemilik</span>
+                            </div>
+                            <p id="profile-card-email" style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">user@nurmart.com</p>
+                            <div style="margin-top: 6px; font-size: 12px; color: var(--text-muted);">
+                                <i class="fa-solid fa-calendar-days"></i> Terdaftar sejak: <span id="profile-card-created">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="form-profile-settings" onsubmit="saveProfileSettings(event)">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-user"></i> Nama Lengkap <span style="color: var(--danger);">*</span></label>
+                                <input type="text" id="setting-user-name" class="form-control" required placeholder="Contoh: Haji Mansyur">
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-envelope"></i> Alamat Email <span style="color: var(--danger);">*</span></label>
+                                <input type="email" id="setting-user-email" class="form-control" required placeholder="user@nurmart.com">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-phone"></i> Nomor Telepon / WhatsApp</label>
+                                <input type="tel" id="setting-user-telepon" class="form-control" placeholder="Contoh: 0812-3456-7890">
+                                <small style="font-size: 11px; color: var(--text-muted);">Digunakan untuk kontak konfirmasi dan koordinasi toko.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-map-location-dot"></i> Alamat Tempat Tinggal</label>
+                                <textarea id="setting-user-alamat" class="form-control" rows="3" placeholder="Contoh: Dusun Krajan RT 02 RW 01, Sumber, Majalengka"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Ganti Password Box -->
+                        <div style="background: #f8fafc; border: 1px solid var(--light-border); border-radius: var(--radius-md); padding: 18px; margin-top: 16px; margin-bottom: 24px;">
+                            <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">
+                                <i class="fa-solid fa-key" style="color: var(--accent);"></i> Ganti Kata Sandi (Opsional)
+                            </h4>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                                Kosongkan jika Anda tidak ingin mengubah password akun saat ini.
+                            </p>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Password Saat Ini (Lama)</label>
+                                    <input type="password" id="setting-user-old-password" class="form-control" placeholder="Masukkan password saat ini">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Password Baru (Minimal 6 karakter)</label>
+                                    <input type="password" id="setting-user-new-password" class="form-control" placeholder="Masukkan password baru">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                            <button type="button" class="btn-sm-action" onclick="loadProfileSettings()">
+                                <i class="fa-solid fa-arrows-rotate"></i> Reset
+                            </button>
+                            <button type="submit" id="btn-save-profile" class="btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Simpan Profil Saya
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 2: PENGATURAN INFORMASI TOKO & STRUK (ALAMAT & NO TELP TOKO) -->
+            <div id="subtab-store" class="settings-panel">
+                <div class="settings-grid-split">
+                    <!-- Kolom Kiri: Form Pengaturan Toko -->
+                    <div class="table-card">
+                        <div class="table-header" style="margin-bottom: 18px;">
+                            <div>
+                                <h3 style="font-size: 16px; font-weight: 800;">
+                                    <i class="fa-solid fa-store" style="color: var(--primary);"></i> Identitas & Kontak Toko
+                                </h3>
+                                <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                    Data ini akan otomatis muncul pada struk belanja PDF dan identitas toko.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="alert-store-kasir-readonly" style="display: none; background: #fef3c7; border: 1px solid #fde68a; color: #92400e; padding: 12px; border-radius: var(--radius-md); font-size: 12px; margin-bottom: 16px;">
+                            <i class="fa-solid fa-circle-info"></i> <strong>Mode Hanya Baca:</strong> Hanya akun dengan hak akses <strong>Pemilik</strong> yang dapat mengubah informasi toko dan nota.
+                        </div>
+
+                        <form id="form-store-settings" onsubmit="saveStoreSettings(event)">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-building"></i> Nama Toko <span style="color: var(--danger);">*</span></label>
+                                <input type="text" id="setting-store-name" class="form-control" required placeholder="Contoh: TOKO KELONTONG NURMART" oninput="updateLiveReceiptPreview()">
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-tag"></i> Slogan / Tagline Toko</label>
+                                <input type="text" id="setting-store-slogan" class="form-control" placeholder="Contoh: Sedia Sembako & Kebutuhan Rumah Tangga Terlengkap" oninput="updateLiveReceiptPreview()">
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-phone-volume"></i> Nomor Telepon / Layanan Pelanggan Toko <span style="color: var(--danger);">*</span></label>
+                                <input type="tel" id="setting-store-phone" class="form-control" required placeholder="Contoh: 0812-3456-7890" oninput="updateLiveReceiptPreview()">
+                                <small style="font-size: 11px; color: var(--text-muted);">Dicetak di bagian header dan footer nota struk.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-location-dot"></i> Alamat Lengkap Toko <span style="color: var(--danger);">*</span></label>
+                                <textarea id="setting-store-address" class="form-control" rows="3" required placeholder="Contoh: Jogodayoh RT 02 RW 01, Sedia Sembako & Kebutuhan Rumah Tangga" oninput="updateLiveReceiptPreview()"></textarea>
+                                <small style="font-size: 11px; color: var(--text-muted);">Alamat toko yang tercetak di kertas thermal struk kasir.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-receipt"></i> Pesan Kaki Struk (Footer Nota)</label>
+                                <textarea id="setting-store-footer" class="form-control" rows="2" placeholder="Contoh: Barang yang sudah dibeli tidak dapat ditukar/dikembalikan. Terima kasih atas kunjungan Anda!" oninput="updateLiveReceiptPreview()"></textarea>
+                            </div>
+
+                            <div id="btn-save-store-container" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                                <button type="button" class="btn-sm-action" onclick="loadStoreSettings()">
+                                    <i class="fa-solid fa-arrows-rotate"></i> Muat Ulang
+                                </button>
+                                <button type="submit" id="btn-save-store" class="btn-primary">
+                                    <i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan Toko
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Kolom Kanan: Pratinjau Realtime Thermal Receipt -->
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
+                            <span><i class="fa-solid fa-receipt"></i> Pratinjau Struk Thermal (80mm)</span>
+                            <span style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; font-weight: 600;">Live Update</span>
+                        </div>
+
+                        <div class="thermal-paper">
+                            <div style="text-align: center; margin-bottom: 6px;">
+                                <div id="preview-store-name" style="font-size: 13px; font-weight: bold; margin-bottom: 2px;">TOKO KELONTONG NURMART</div>
+                                <div id="preview-store-slogan" style="font-size: 9px; color: #444; margin-bottom: 2px;">Sedia Sembako & Kebutuhan Rumah Tangga</div>
+                                <div id="preview-store-address" style="font-size: 9px; line-height: 1.3;">Jogodayoh RT 02, Sedia Sembako</div>
+                                <div id="preview-store-phone" style="font-size: 9px; font-weight: bold; margin-top: 2px;">Telp / WA: 0812-3456-7890</div>
+                            </div>
+
+                            <hr class="thermal-divider">
+
+                            <div style="display: flex; justify-content: space-between; font-size: 9.5px;">
+                                <span>No. Nota</span>
+                                <span style="font-weight: bold;">NOTA-202609-0012</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 9.5px;">
+                                <span>Tanggal</span>
+                                <span>24/09/2026 14:30</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 9.5px;">
+                                <span>Kasir</span>
+                                <span>Siti Aminah</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 9.5px;">
+                                <span>Metode</span>
+                                <span style="font-weight: bold;">TUNAI</span>
+                            </div>
+
+                            <hr class="thermal-divider">
+
+                            <!-- Contoh Item Belanja -->
+                            <div style="font-size: 9.5px;">
+                                <div style="font-weight: bold;">Beras Pandan Wangi 5kg</div>
+                                <div style="display: flex; justify-content: space-between; color: #555;">
+                                    <span>1 x Rp 76.000</span>
+                                    <span style="font-weight: bold; color: #111;">Rp 76.000</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 9.5px; margin-top: 4px;">
+                                <div style="font-weight: bold;">Minyak Goreng 2L</div>
+                                <div style="display: flex; justify-content: space-between; color: #555;">
+                                    <span>2 x Rp 34.000</span>
+                                    <span style="font-weight: bold; color: #111;">Rp 68.000</span>
+                                </div>
+                            </div>
+
+                            <hr class="thermal-divider">
+
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 11px;">
+                                <span>TOTAL</span>
+                                <span>Rp 144.000</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 9.5px;">
+                                <span>Bayar (TUNAI)</span>
+                                <span>Rp 150.000</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 9.5px;">
+                                <span>Kembalian</span>
+                                <span>Rp 6.000</span>
+                            </div>
+
+                            <hr class="thermal-double-divider">
+
+                            <div style="text-align: center; font-size: 8.5px; color: #333; line-height: 1.4;">
+                                *** TERIMA KASIH ATAS KUNJUNGAN ANDA ***<br>
+                                <span id="preview-store-footer">Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.</span><br>
+                                <span id="preview-store-footer-phone">Layanan Pelanggan: 0812-3456-7890</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 3: MANAJEMEN KASIR & PENGGUNA (ROLE: PEMILIK) -->
+            <div id="subtab-users" class="settings-panel">
+                <div class="table-card">
+                    <div class="table-header">
+                        <div>
+                            <h3 style="font-size: 16px; font-weight: 800;">
+                                <i class="fa-solid fa-users" style="color: var(--primary);"></i> Daftar Akun Kasir & Pengguna
+                            </h3>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Kelola staf kasir dan pemilik yang memiliki akses ke aplikasi POS & server backend.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="search-users-input" class="form-control" placeholder="Cari nama/email/telepon..." style="width: 220px;" oninput="filterUsersList()">
+                            <button class="btn-primary" onclick="openModalAddUser()">
+                                <i class="fa-solid fa-user-plus"></i> Tambah Pengguna
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Lengkap</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Nomor Telepon</th>
+                                <th>Alamat</th>
+                                <th>Tgl Dibuat</th>
+                                <th style="text-align: center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Loaded dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- ========================================== -->
@@ -1744,6 +2216,65 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- MODAL 4: TAMBAH / EDIT PENGGUNA & KASIR    -->
+    <!-- ========================================== -->
+    <div id="modal-user" class="modal-overlay">
+        <div class="modal-box" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3 id="modal-user-title"><i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Tambah Pengguna Baru</h3>
+                <button class="modal-close" onclick="closeModal('modal-user')">&times;</button>
+            </div>
+            <form id="form-user-modal" onsubmit="saveUserModal(event)">
+                <input type="hidden" id="modal-user-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nama Lengkap <span style="color: var(--danger);">*</span></label>
+                        <input type="text" id="modal-user-name" class="form-control" required placeholder="Contoh: Siti Aminah">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label>Alamat Email <span style="color: var(--danger);">*</span></label>
+                            <input type="email" id="modal-user-email" class="form-control" required placeholder="kasir@nurmart.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Hak Akses / Role <span style="color: var(--danger);">*</span></label>
+                            <select id="modal-user-role" class="form-control" required>
+                                <option value="kasir">Kasir (POS & Belanja)</option>
+                                <option value="pemilik">Pemilik Toko (Akses Penuh)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-phone"></i> Nomor Telepon / WA</label>
+                        <input type="tel" id="modal-user-telepon" class="form-control" placeholder="Contoh: 0812-9876-5432">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-location-dot"></i> Alamat Tempat Tinggal</label>
+                        <textarea id="modal-user-alamat" class="form-control" rows="2" placeholder="Contoh: Dusun Sukasari RT 01"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fa-solid fa-lock"></i> Password <span id="modal-user-password-required" style="color: var(--danger);">*</span></label>
+                        <input type="password" id="modal-user-password" class="form-control" placeholder="Minimal 6 karakter">
+                        <small id="modal-user-password-hint" style="font-size: 11px; color: var(--text-muted); display: block; margin-top: 4px;">
+                            Password wajib minimal 6 karakter.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-sm-action" onclick="closeModal('modal-user')">Batal</button>
+                    <button type="submit" id="btn-save-user-modal" class="btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan Data Pengguna
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     </div><!-- END screen-main -->
     <!-- END OF SCREEN 2: MAIN DASHBOARD & POS -->
 
@@ -1826,6 +2357,7 @@
                     localStorage.setItem('nurmart_user', JSON.stringify(data.data.user));
 
                     updateUserHeader(data.data.user);
+                    applyRoleBasedUI();
                     showToast(`Selamat datang, ${data.data.user.name}!`, 'success');
 
                     // Switch screen to main app
@@ -1884,6 +2416,7 @@
                     if (json.status) {
                         currentRole = json.data.role;
                         updateUserHeader(json.data);
+                        applyRoleBasedUI();
                         document.getElementById('screen-login').style.display = 'none';
                         document.getElementById('screen-main').style.display = 'flex';
                         refreshAllData();
@@ -1916,8 +2449,47 @@
             }
         }
 
+        // ============================================
+        // ROLE-BASED UI ACCESS CONTROL
+        // ============================================
+        const KASIR_ALLOWED_TABS = ['pos'];
+        const PEMILIK_ONLY_TABS = ['dasbor', 'barang', 'belanja', 'laporan', 'pengaturan'];
+
+        function applyRoleBasedUI() {
+            if (currentRole === 'kasir') {
+                // Sembunyikan semua menu kecuali POS
+                PEMILIK_ONLY_TABS.forEach(tab => {
+                    const btn = document.getElementById(`nav-btn-${tab}`);
+                    if (btn) btn.style.display = 'none';
+                });
+                // Pastikan tab POS terlihat & aktif
+                const posBtn = document.getElementById('nav-btn-pos');
+                if (posBtn) posBtn.style.display = 'inline-flex';
+                // Sembunyikan tombol ganti role
+                const switchBtn = document.getElementById('btn-switch-role');
+                if (switchBtn) switchBtn.style.display = 'none';
+            } else {
+                // Pemilik: tampilkan semua menu
+                PEMILIK_ONLY_TABS.forEach(tab => {
+                    const btn = document.getElementById(`nav-btn-${tab}`);
+                    if (btn) btn.style.display = '';
+                });
+                const posBtn = document.getElementById('nav-btn-pos');
+                if (posBtn) posBtn.style.display = '';
+                // Tampilkan tombol ganti role (hanya untuk dev/demo)
+                const switchBtn = document.getElementById('btn-switch-role');
+                if (switchBtn) switchBtn.style.display = 'inline-flex';
+            }
+        }
+
         // Tab Navigation
         function switchTab(tabId) {
+            // Blokir akses tab terlarang untuk kasir
+            if (currentRole === 'kasir' && !KASIR_ALLOWED_TABS.includes(tabId)) {
+                showToast('Akses ditolak: Kasir hanya dapat mengakses halaman Kasir POS.', 'error');
+                return;
+            }
+
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
@@ -1940,6 +2512,7 @@
             if (tabId === 'barang') loadMasterBarang();
             if (tabId === 'belanja') loadBelanjaTab();
             if (tabId === 'laporan') loadLabaRugiReport();
+            if (tabId === 'pengaturan') loadPengaturanTab();
         }
 
         // API Helpers
@@ -1978,13 +2551,24 @@
         // 1. DATA LOADER & DASHBOARD
         // ============================================
         async function refreshAllData() {
-            await Promise.all([
-                loadDashboard(),
-                loadCategories(),
-                loadSuppliers(),
-                loadPosProducts(),
-                loadMasterBarang()
-            ]);
+            if (currentRole === 'kasir') {
+                // Kasir hanya butuh data untuk POS
+                await Promise.all([
+                    loadCategories(),
+                    loadPosProducts(),
+                ]);
+                // Langsung arahkan ke tab POS
+                switchTab('pos');
+            } else {
+                // Pemilik load semua data
+                await Promise.all([
+                    loadDashboard(),
+                    loadCategories(),
+                    loadSuppliers(),
+                    loadPosProducts(),
+                    loadMasterBarang()
+                ]);
+            }
         }
 
         async function loadCategories() {
@@ -2116,6 +2700,7 @@
             const searchKeyword = (document.getElementById('pos-search-input')?.value || '').toLowerCase().trim();
 
             const filtered = allProducts.filter(item => {
+                if (item.stok <= 0) return false;
                 const matchCat = currentPosCategory === null || item.kategori_id === currentPosCategory;
                 const matchSearch = !searchKeyword || 
                     item.nama_barang.toLowerCase().includes(searchKeyword) ||
@@ -2130,15 +2715,22 @@
             }
 
             grid.innerHTML = filtered.map(item => {
-                const stockClass = item.stok <= 0 ? 'stock-empty' : (item.stok <= 10 ? 'stock-low' : 'stock-safe');
-                const stockLabel = item.stok <= 0 ? 'Habis' : `Stok: ${item.stok} ${item.satuan}`;
+                const stockClass = item.stok <= 10 ? 'stock-low' : 'stock-safe';
+                const stockLabel = `Stok: ${item.stok} ${item.satuan}`;
+                const imgSrc = item.gambar_full_url || (item.gambar_url ? (item.gambar_url.startsWith('http') ? item.gambar_url : `/storage/${item.gambar_url}`) : null);
+                const imgHtml = imgSrc
+                    ? `<img src="${imgSrc}" class="pos-item-img" alt="${item.nama_barang}" loading="lazy" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'pos-item-img-placeholder\\'><i class=\\'fa-solid fa-box-open\\'></i></div>';">`
+                    : `<div class="pos-item-img-placeholder"><i class="fa-solid fa-box-open"></i></div>`;
                 return `
                     <div class="pos-item-card" onclick="addToCart(${item.id})">
-                        <div>
-                            <div class="pos-item-sku">${item.kode_sku}</div>
-                            <div class="pos-item-name">${item.nama_barang}</div>
+                        <div class="pos-item-image-box">
+                            ${imgHtml}
                         </div>
-                        <div>
+                        <div style="padding: 6px 8px 2px;">
+                            <div class="pos-item-sku">${item.kode_sku}</div>
+                            <div class="pos-item-name" title="${item.nama_barang}">${item.nama_barang}</div>
+                        </div>
+                        <div style="padding: 2px 8px 8px;">
                             <div class="pos-item-price">${formatRupiah(item.harga_jual)}</div>
                             <span class="pos-item-stock ${stockClass}">${stockLabel}</span>
                         </div>
@@ -2801,6 +3393,411 @@
                 }
             } catch (e) {
                 console.error(e);
+            }
+        }
+
+        // ============================================
+        // 6. PENGATURAN SISTEM, PROFIL, ALAMAT & TELP
+        // ============================================
+        let allUsers = [];
+        let currentStoreSettings = null;
+        let currentUserProfile = null;
+
+        function switchSettingsSubTab(subTabId) {
+            document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.settings-subnav-btn').forEach(b => b.classList.remove('active'));
+
+            const targetPanel = document.getElementById(`subtab-${subTabId}`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+
+            const subButtons = document.querySelectorAll('.settings-subnav-btn');
+            subButtons.forEach(btn => {
+                if (btn.getAttribute('onclick')?.includes(subTabId)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            if (subTabId === 'profile') loadProfileSettings();
+            if (subTabId === 'store') loadStoreSettings();
+            if (subTabId === 'users') loadUsersList();
+        }
+
+        async function loadPengaturanTab() {
+            // Setup role-based access for settings subnav
+            const btnUsers = document.getElementById('btn-subnav-users');
+            const alertStoreReadonly = document.getElementById('alert-store-kasir-readonly');
+            const btnSaveStoreContainer = document.getElementById('btn-save-store-container');
+            const storeInputs = document.querySelectorAll('#form-store-settings input, #form-store-settings textarea');
+            const roleIndicator = document.getElementById('settings-role-indicator');
+
+            if (roleIndicator) {
+                if (currentRole === 'pemilik') {
+                    roleIndicator.innerHTML = '<span class="badge-role-pill role-pemilik"><i class="fa-solid fa-crown"></i> Mode Pemilik Toko (Full Access)</span>';
+                } else {
+                    roleIndicator.innerHTML = '<span class="badge-role-pill role-kasir"><i class="fa-solid fa-bolt"></i> Mode Kasir (Restricted)</span>';
+                }
+            }
+
+            if (currentRole === 'pemilik') {
+                if (btnUsers) btnUsers.style.display = 'inline-flex';
+                if (alertStoreReadonly) alertStoreReadonly.style.display = 'none';
+                if (btnSaveStoreContainer) btnSaveStoreContainer.style.display = 'flex';
+                storeInputs.forEach(input => input.removeAttribute('disabled'));
+            } else {
+                // Kasir cannot manage users and only view store info
+                if (btnUsers) btnUsers.style.display = 'none';
+                if (alertStoreReadonly) alertStoreReadonly.style.display = 'block';
+                if (btnSaveStoreContainer) btnSaveStoreContainer.style.display = 'none';
+                storeInputs.forEach(input => input.setAttribute('disabled', 'true'));
+            }
+
+            // Default activate subtab profile
+            switchSettingsSubTab('profile');
+        }
+
+        async function loadProfileSettings() {
+            try {
+                const res = await fetch(`${API_BASE}/profile`, { headers: apiHeaders() });
+                const json = await res.json();
+                if (json.status) {
+                    currentUserProfile = json.data;
+                    const u = json.data;
+
+                    // Header card
+                    document.getElementById('profile-avatar-char').innerText = (u.name || 'U').charAt(0).toUpperCase();
+                    document.getElementById('profile-card-name').innerText = u.name;
+                    document.getElementById('profile-card-email').innerText = u.email;
+                    document.getElementById('profile-card-role').className = `badge-role-pill role-${u.role}`;
+                    document.getElementById('profile-card-role').innerText = u.role === 'pemilik' ? 'Pemilik Toko' : 'Kasir Toko';
+                    document.getElementById('profile-card-created').innerText = u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+
+                    // Form inputs
+                    document.getElementById('setting-user-name').value = u.name || '';
+                    document.getElementById('setting-user-email').value = u.email || '';
+                    document.getElementById('setting-user-telepon').value = u.telepon || '';
+                    document.getElementById('setting-user-alamat').value = u.alamat || '';
+                    document.getElementById('setting-user-old-password').value = '';
+                    document.getElementById('setting-user-new-password').value = '';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function saveProfileSettings(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-profile');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            const payload = {
+                name: document.getElementById('setting-user-name').value.trim(),
+                email: document.getElementById('setting-user-email').value.trim(),
+                telepon: document.getElementById('setting-user-telepon').value.trim(),
+                alamat: document.getElementById('setting-user-alamat').value.trim(),
+            };
+
+            const oldPwd = document.getElementById('setting-user-old-password').value;
+            const newPwd = document.getElementById('setting-user-new-password').value;
+
+            if (newPwd) {
+                payload.password_lama = oldPwd;
+                payload.password_baru = newPwd;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/profile`, {
+                    method: 'PUT',
+                    headers: apiHeaders(),
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.status) {
+                    showToast(json.message || 'Profil berhasil disimpan!', 'success');
+                    updateUserHeader(json.data);
+                    localStorage.setItem('nurmart_user', JSON.stringify(json.data));
+                    loadProfileSettings();
+                } else {
+                    const errMsg = json.errors ? Object.values(json.errors).flat().join('<br>') : json.message;
+                    showToast(errMsg, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal menghubungi server.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Profil Saya';
+            }
+        }
+
+        async function loadStoreSettings() {
+            try {
+                const res = await fetch(`${API_BASE}/pengaturan`, { headers: apiHeaders() });
+                const json = await res.json();
+                if (json.status) {
+                    currentStoreSettings = json.data;
+                    const s = json.data;
+
+                    document.getElementById('setting-store-name').value = s.nama_toko || '';
+                    document.getElementById('setting-store-slogan').value = s.slogan || '';
+                    document.getElementById('setting-store-phone').value = s.no_telepon || '';
+                    document.getElementById('setting-store-address').value = s.alamat || '';
+                    document.getElementById('setting-store-footer').value = s.footer_struk || '';
+
+                    updateLiveReceiptPreview();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function updateLiveReceiptPreview() {
+            const name = document.getElementById('setting-store-name').value || 'TOKO KELONTONG NURMART';
+            const slogan = document.getElementById('setting-store-slogan').value || '';
+            const phone = document.getElementById('setting-store-phone').value || '';
+            const address = document.getElementById('setting-store-address').value || '';
+            const footer = document.getElementById('setting-store-footer').value || 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.';
+
+            document.getElementById('preview-store-name').innerText = name;
+            document.getElementById('preview-store-slogan').innerText = slogan;
+            document.getElementById('preview-store-address').innerText = address;
+            document.getElementById('preview-store-phone').innerText = phone ? `Telp / WA: ${phone}` : '';
+            document.getElementById('preview-store-footer').innerText = footer;
+            document.getElementById('preview-store-footer-phone').innerText = phone ? `Layanan Pelanggan: ${phone}` : '';
+        }
+
+        async function saveStoreSettings(e) {
+            e.preventDefault();
+            if (currentRole !== 'pemilik') {
+                showToast('Hanya Pemilik Toko yang dapat mengubah informasi toko.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-save-store');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            const payload = {
+                nama_toko: document.getElementById('setting-store-name').value.trim(),
+                slogan: document.getElementById('setting-store-slogan').value.trim(),
+                no_telepon: document.getElementById('setting-store-phone').value.trim(),
+                alamat: document.getElementById('setting-store-address').value.trim(),
+                footer_struk: document.getElementById('setting-store-footer').value.trim(),
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/pengaturan`, {
+                    method: 'PUT',
+                    headers: apiHeaders(),
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.status) {
+                    showToast(json.message || 'Pengaturan toko berhasil disimpan!', 'success');
+                    currentStoreSettings = json.data;
+                    updateLiveReceiptPreview();
+                } else {
+                    const errMsg = json.errors ? Object.values(json.errors).flat().join('<br>') : json.message;
+                    showToast(errMsg, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal menghubungi server.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan Toko';
+            }
+        }
+
+        async function loadUsersList() {
+            if (currentRole !== 'pemilik') return;
+
+            const tbody = document.getElementById('users-tbody');
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data pengguna...</td></tr>';
+
+            try {
+                const res = await fetch(`${API_BASE}/users`, { headers: apiHeaders() });
+                const json = await res.json();
+                if (json.status) {
+                    allUsers = json.data;
+                    renderUsersTable(allUsers);
+                }
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--danger); padding: 24px;">Gagal memuat pengguna.</td></tr>';
+            }
+        }
+
+        function renderUsersTable(users) {
+            const tbody = document.getElementById('users-tbody');
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Tidak ada data pengguna ditemukan.</td></tr>';
+                return;
+            }
+
+            const currentUserId = currentUserProfile?.id;
+
+            tbody.innerHTML = users.map((u, idx) => {
+                const isSelf = currentUserId && currentUserId === u.id;
+                const roleBadge = u.role === 'pemilik' 
+                    ? '<span class="badge-role-pill role-pemilik"><i class="fa-solid fa-crown"></i> Pemilik</span>' 
+                    : '<span class="badge-role-pill role-kasir"><i class="fa-solid fa-user-tag"></i> Kasir</span>';
+                
+                const createdDate = u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID') : '-';
+
+                return `
+                    <tr>
+                        <td style="font-weight: 600;">${idx + 1}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: ${u.role === 'pemilik' ? '#f59e0b' : '#059669'}; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">
+                                    ${(u.name || 'U').charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 700; color: var(--text-main);">${u.name} ${isSelf ? '<span style="font-size: 10px; background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Anda</span>' : ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${u.email}</td>
+                        <td>${roleBadge}</td>
+                        <td>${u.telepon ? `<i class="fa-solid fa-phone" style="font-size: 11px; color: var(--primary);"></i> ${u.telepon}` : '<span style="color: var(--text-muted);">-</span>'}</td>
+                        <td style="max-width: 200px; white-space: normal; font-size: 12px;">${u.alamat || '<span style="color: var(--text-muted);">-</span>'}</td>
+                        <td style="font-size: 12px; color: var(--text-muted);">${createdDate}</td>
+                        <td style="text-align: center;">
+                            <div style="display: inline-flex; gap: 6px;">
+                                <button type="button" class="btn-sm-action" onclick="openModalEditUser(${u.id})" title="Edit Pengguna">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                ${!isSelf ? `
+                                    <button type="button" class="btn-sm-action" style="color: var(--danger);" onclick="deleteUserConfirm(${u.id}, '${u.name.replace(/'/g, "\\'")}')" title="Hapus Pengguna">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterUsersList() {
+            const query = (document.getElementById('search-users-input').value || '').toLowerCase().trim();
+            if (!query) {
+                renderUsersTable(allUsers);
+                return;
+            }
+
+            const filtered = allUsers.filter(u => 
+                (u.name && u.name.toLowerCase().includes(query)) ||
+                (u.email && u.email.toLowerCase().includes(query)) ||
+                (u.telepon && u.telepon.toLowerCase().includes(query)) ||
+                (u.alamat && u.alamat.toLowerCase().includes(query))
+            );
+            renderUsersTable(filtered);
+        }
+
+        function openModalAddUser() {
+            document.getElementById('modal-user-id').value = '';
+            document.getElementById('modal-user-title').innerHTML = '<i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Tambah Pengguna Baru';
+            document.getElementById('modal-user-name').value = '';
+            document.getElementById('modal-user-email').value = '';
+            document.getElementById('modal-user-role').value = 'kasir';
+            document.getElementById('modal-user-telepon').value = '';
+            document.getElementById('modal-user-alamat').value = '';
+            document.getElementById('modal-user-password').value = '';
+            document.getElementById('modal-user-password').setAttribute('required', 'true');
+            document.getElementById('modal-user-password-required').style.display = 'inline';
+            document.getElementById('modal-user-password-hint').innerText = 'Password wajib diisi minimal 6 karakter.';
+            openModal('modal-user');
+        }
+
+        function openModalEditUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('modal-user-id').value = user.id;
+            document.getElementById('modal-user-title').innerHTML = '<i class="fa-solid fa-user-pen" style="color: var(--primary);"></i> Edit Data Pengguna';
+            document.getElementById('modal-user-name').value = user.name || '';
+            document.getElementById('modal-user-email').value = user.email || '';
+            document.getElementById('modal-user-role').value = user.role || 'kasir';
+            document.getElementById('modal-user-telepon').value = user.telepon || '';
+            document.getElementById('modal-user-alamat').value = user.alamat || '';
+            document.getElementById('modal-user-password').value = '';
+            document.getElementById('modal-user-password').removeAttribute('required');
+            document.getElementById('modal-user-password-required').style.display = 'none';
+            document.getElementById('modal-user-password-hint').innerText = 'Kosongkan jika password tidak ingin diubah.';
+            openModal('modal-user');
+        }
+
+        async function saveUserModal(e) {
+            e.preventDefault();
+            const id = document.getElementById('modal-user-id').value;
+            const btn = document.getElementById('btn-save-user-modal');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            const payload = {
+                name: document.getElementById('modal-user-name').value.trim(),
+                email: document.getElementById('modal-user-email').value.trim(),
+                role: document.getElementById('modal-user-role').value,
+                telepon: document.getElementById('modal-user-telepon').value.trim(),
+                alamat: document.getElementById('modal-user-alamat').value.trim(),
+            };
+
+            const pwd = document.getElementById('modal-user-password').value;
+            if (pwd) {
+                payload.password = pwd;
+            }
+
+            const url = id ? `${API_BASE}/users/${id}` : `${API_BASE}/users`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: apiHeaders(),
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.status) {
+                    showToast(json.message || 'Pengguna berhasil disimpan!', 'success');
+                    closeModal('modal-user');
+                    loadUsersList();
+                } else {
+                    const err = json.errors ? Object.values(json.errors).flat().join('<br>') : json.message;
+                    showToast(err, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal menghubungi server.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Data Pengguna';
+            }
+        }
+
+        async function deleteUserConfirm(userId, userName) {
+            if (!confirm(`Yakin ingin menghapus pengguna "${userName}"? Tindakan ini tidak dapat dibatalkan.`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: apiHeaders()
+                });
+                const json = await res.json();
+                if (json.status) {
+                    showToast(json.message || 'Pengguna berhasil dihapus.', 'success');
+                    loadUsersList();
+                } else {
+                    showToast(json.message || 'Gagal menghapus pengguna.', 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Terjadi kesalahan jaringan.', 'error');
             }
         }
 

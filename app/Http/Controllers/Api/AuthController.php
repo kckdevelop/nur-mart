@@ -9,6 +9,8 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -34,6 +36,8 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
+                'telepon' => $user->telepon,
+                'alamat' => $user->alamat,
             ],
             'token' => $token,
             'token_type' => 'Bearer',
@@ -52,8 +56,73 @@ class AuthController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
+            'telepon' => $user->telepon,
+            'alamat' => $user->alamat,
             'created_at' => $user->created_at,
         ], 'Data profil berhasil diambil.');
+    }
+
+    /**
+     * Update profile pengguna yang sedang login
+     */
+    public function updateProfile(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:100',
+            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
+            'telepon' => 'nullable|string|max:30',
+            'alamat' => 'nullable|string|max:500',
+            'password_lama' => 'nullable|string',
+            'password_baru' => 'nullable|string|min:6',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan pengguna lain.',
+            'password_baru.min' => 'Password baru minimal 6 karakter.',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validasi profil gagal', 422, $validator->errors());
+        }
+
+        $validated = $validator->validated();
+
+        // Jika ingin mengubah password, cek password lama
+        if (!empty($validated['password_baru'])) {
+            if (empty($validated['password_lama'])) {
+                return $this->errorResponse('Password lama wajib diisi untuk mengubah password.', 422, [
+                    'password_lama' => ['Password lama wajib diisi.']
+                ]);
+            }
+
+            if (!Hash::check($validated['password_lama'], $user->password)) {
+                return $this->errorResponse('Password lama tidak sesuai.', 422, [
+                    'password_lama' => ['Password lama yang Anda masukkan salah.']
+                ]);
+            }
+
+            $user->password = Hash::make($validated['password_baru']);
+        }
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->telepon = $validated['telepon'] ?? null;
+        $user->alamat = $validated['alamat'] ?? null;
+        $user->save();
+
+        return $this->successResponse([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'telepon' => $user->telepon,
+            'alamat' => $user->alamat,
+            'updated_at' => $user->updated_at,
+        ], 'Profil pengguna berhasil diperbarui.');
     }
 
     /**
