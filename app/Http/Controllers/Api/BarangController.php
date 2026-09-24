@@ -9,7 +9,6 @@ use App\Models\Barang;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -50,10 +49,10 @@ class BarangController extends Controller
     {
         $data = $request->validated();
 
-        // Handle upload gambar jika ada
+        // Handle upload gambar — simpan path relatif ke DB
+        // accessor gambar_full_url di model yang konversi ke full URL
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('barangs', 'public');
-            $data['gambar_url'] = url(Storage::url($path));
+            $data['gambar_url'] = $request->file('gambar')->store('barangs', 'public');
         }
 
         unset($data['gambar']);
@@ -85,17 +84,10 @@ class BarangController extends Controller
 
         $data = $request->validated();
 
+        // Ganti gambar jika ada file baru
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada di local storage
-            if ($barang->gambar_url) {
-                $oldPath = str_replace(url('/storage') . '/', '', $barang->gambar_url);
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
-
-            $path = $request->file('gambar')->store('barangs', 'public');
-            $data['gambar_url'] = url(Storage::url($path));
+            $barang->hapusGambar(); // hapus file lama dari storage
+            $data['gambar_url'] = $request->file('gambar')->store('barangs', 'public');
         }
 
         unset($data['gambar']);
@@ -121,17 +113,32 @@ class BarangController extends Controller
             );
         }
 
-        // Hapus file gambar jika ada
-        if ($barang->gambar_url) {
-            $path = str_replace(url('/storage') . '/', '', $barang->gambar_url);
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
-            }
-        }
-
+        $barang->hapusGambar(); // hapus file gambar dari storage
         $barang->delete();
 
         return $this->successResponse(null, 'Produk berhasil dihapus.');
+    }
+
+    /**
+     * Hapus hanya gambar produk tanpa menghapus produk itu sendiri.
+     * DELETE /api/barang/{id}/gambar
+     */
+    public function destroyGambar(int $id): JsonResponse
+    {
+        $barang = Barang::find($id);
+
+        if (!$barang) {
+            return $this->errorResponse('Produk tidak ditemukan.', 404);
+        }
+
+        if (empty($barang->gambar_url)) {
+            return $this->errorResponse('Produk ini belum memiliki gambar.', 422);
+        }
+
+        $barang->hapusGambar();
+        $barang->update(['gambar_url' => null]);
+
+        return $this->successResponse(null, 'Gambar produk berhasil dihapus.');
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Barang extends Model
 {
@@ -26,6 +27,8 @@ class Barang extends Model
         'gambar_url',
     ];
 
+    protected $appends = ['gambar_full_url'];
+
     protected function casts(): array
     {
         return [
@@ -33,6 +36,51 @@ class Barang extends Model
             'harga_jual' => 'float',
             'stok' => 'integer',
         ];
+    }
+
+    /**
+     * Accessor: selalu kembalikan full URL gambar produk.
+     * Mendukung path relatif storage (barangs/xxx.jpg) maupun URL eksternal.
+     */
+    public function getGambarFullUrlAttribute(): ?string
+    {
+        if (empty($this->gambar_url)) {
+            return null;
+        }
+
+        // Jika sudah berupa URL lengkap (http/https), kembalikan langsung
+        if (str_starts_with($this->gambar_url, 'http')) {
+            return $this->gambar_url;
+        }
+
+        // Path relatif di storage public → konversi ke full URL
+        return url(Storage::url($this->gambar_url));
+    }
+
+    /**
+     * Hapus file gambar dari storage (jika tersimpan lokal).
+     */
+    public function hapusGambar(): void
+    {
+        if (empty($this->gambar_url) || str_starts_with($this->gambar_url, 'http')) {
+            // Abaikan jika gambar_url adalah URL eksternal atau kosong
+            // Hanya hapus jika path relatif storage
+            if (!empty($this->gambar_url) && !str_starts_with($this->gambar_url, url('/'))) {
+                return;
+            }
+
+            // Ekstrak path dari full URL
+            $relativePath = str_replace(url('/storage') . '/', '', $this->gambar_url);
+            if (Storage::disk('public')->exists($relativePath)) {
+                Storage::disk('public')->delete($relativePath);
+            }
+            return;
+        }
+
+        // Path relatif langsung
+        if (Storage::disk('public')->exists($this->gambar_url)) {
+            Storage::disk('public')->delete($this->gambar_url);
+        }
     }
 
     public function kategori(): BelongsTo

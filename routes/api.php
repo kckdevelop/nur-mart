@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/barang', [BarangController::class, 'store']);
         Route::post('/barang/{id}', [BarangController::class, 'update']); // Support multipart/form-data upload
         Route::put('/barang/{id}', [BarangController::class, 'update']);
+        Route::delete('/barang/{id}/gambar', [BarangController::class, 'destroyGambar']); // Hapus gambar saja
         Route::delete('/barang/{id}', [BarangController::class, 'destroy']);
 
         // Purchasing / Belanja Barang
